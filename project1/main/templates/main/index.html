@@ -1,0 +1,97 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block category %}
+<div style="display: inline-flex; flex-wrap: wrap; margin-left: 30px; margin-top: 10px; padding: 10px;">
+    <h1 style="font-weight: bold;">Все</h1>
+    <button style="background: transparent; outline: none; border: 0; margin-left: 10px;" class="FilterButton" onclick="myFunction()"><img src="https://img.icons8.com/fluency/48/null/filter--v1.png"/></button>
+    <div id="myDropdown" class="dropdown-content" style="margin-top: 50px; margin-left: 80px; border: 2px solid blue; background-color: rgb(120, 106, 155);">
+        {% for c in categoryes %}
+        <form action="Sort" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="Category" value="{{ c }}">
+
+            {% if c == category %}
+            <button style="background: green; outline: none; border: 0;">{{c}}</button>
+            {% else %}
+            <button style=" outline: none; border: 0;">{{c}}</button>
+            {% endif %}
+        </form>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+<!-- Панель с фильмами -->
+
+{% block content %}
+
+{% if basketLen > 0 and not isAmin %}
+<div>
+    <form id="Basket" action="Basket" method="post">
+        {% csrf_token %}
+        <input id="BasketCount" type="hidden" name="count" value="{{ basketLen }}">
+        <button class="basket">
+            <img src="https://img.icons8.com/fluency/48/null/shopping-cart-loaded.png"/>
+        </button>
+    </form>
+</div>
+{% elif not isAmin %}
+<div>
+    <form id="Basket" action="Basket" method="post" style="display: none;">
+        {% csrf_token %}
+        <input id="BasketCount" type="hidden" name="count" value="{{ basketLen }}">
+        <button class="basket">
+            <img src="https://img.icons8.com/fluency/48/null/shopping-cart-loaded.png"/>
+        </button>
+    </form>
+</div>
+{% endif %}
+
+{% if isAdmin %}
+<div>
+    <form action="AddProduct" method="get">
+        {% csrf_token %}
+        <button class="basket" style="background: transparent; outline: none; border: 0;">
+            <img src="https://img.icons8.com/dusk/64/null/plus--v1.png"/>
+        </button>
+    </form>
+</div>
+{% endif %}
+
+<div style="display: inline-flex; flex-wrap: wrap; margin-left: 30px; ">
+
+    {% for product in products %}
+    {% if category == None or category == product.category %}
+    <div style="display: flex; flex-wrap: wrap; width: 400px; background-color: white; border: 3px solid black; border-radius: 10%; margin-left: 20px; margin-top: 20px;">
+        {% if isAdmin %}
+        <form action="Remove" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="name"  value="{{ product.name }}">
+            <button style="border-radius: 50%;"><img src="https://img.icons8.com/emoji/48/null/cross-mark-emoji.png" width="90" height="60" ></button>
+        </form>
+        {% endif %}
+        <img class="ProductImage" src="{{ product.img }}" width="350" height="280">
+        <div style="display: inline-flex; flex-wrap: wrap;">
+            {% if isLogin and not isAdmin %}
+            <h2 style="margin-left: 80px; padding: 10px; color: green; font-weight: bold;">{{ product.price }}$</h2>
+            <img src="https://img.icons8.com/emoji/48/null/check-mark-emoji.png" id="{{product.name}}" style="display: none; margin-left: 80px; margin-top: 5px; height: 50px;"/>
+            <button class="btn btn-outline-success" type="submit" name="{{product.name}}" style="background-color: green; color: white; margin-left: 80px; margin-top: 5px; height: 50px;" onclick="OnButtonClick(this)">Buy!</button>
+            {% elif isAdmin %}
+            <h2 style="margin-left: 80px; padding: 10px; color: green; font-weight: bold;">{{ product.price }}$</h2>
+            <form action="Change" method="get">
+                {% csrf_token %}
+                <input type="hidden" name="name"  value="{{ product.name }}">
+                <button class="btn btn-outline-success" type="submit" style="background-color: rgb(105, 79, 6); color: white; margin-left: 80px; margin-top: 5px; height: 50px;">Chenge</button>
+            </form>
+            {% else %}
+            <h2 style="margin-left: 150px; padding: 10px; color: green; font-weight: bold;">{{ product.price }}$</h2>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}
+

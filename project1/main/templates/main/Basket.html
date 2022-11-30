@@ -1,0 +1,38 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block category %}
+<div style="display: inline-flex; flex-wrap: wrap; margin-left: 30px; margin-top: 10px; padding: 10px;" id="BasketHeader">
+    <h1 style="font-weight: bold;">Корзина</h1>
+</div>
+{% endblock %}
+
+<!-- Панель с фильмами -->
+
+{% block content %}
+
+<div style="display: block; flex-wrap: wrap;" id="BasketContent">
+    {% for item in basket %}
+    <div style=" border: 2px solid black; width: auto; margin-top: 10px; margin-left: 20px; background-color: white; width: 28%;" id="{{item.product.name}}">
+        <img src="{{ item.product.img }}" width="90" height="60">
+        <input type="hidden" id="{{item.product.name}}OldNumberValue" value="1">
+        <input type="number" name="{{item.product.name}}" min="1" value="1" onchange="OnCountChange(this)">
+        <label style="margin-left: 10px; color: green; font-weight: bold; font-size: 30px;" id="{{item.product.name}}Price">{{ item.product.price }}</label>
+        <button style="background: transparent; outline: none; border: 0; margin-left: 40px; margin-top: 10px;" onclick="RemoveFromBuscket(this)"><img src="https://img.icons8.com/emoji/48/null/cross-mark-emoji.png" width="60" height="30"></button>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="display: inline-flex; margin-left: 30px; margin-top: 20px" id="PriceInfo">
+    <h1>Price: </h1>
+    <h1 style="color: rgb(40, 104, 14); font-weight: bold; margin-left: 10px;" id="SumPrice">{{ SumPrice }}</h1>
+
+    <button class="btn btn-outline-success" type="submit" style="background-color: green; color: white; border: none; font-weight: bold; margin-left: 220px;" onclick="OnBuy()">Buy!</button>
+
+</div>
+
+<div style="display: none;" id="ShopEnd">
+    <h1 style="font-weight: bold; margin-left: 30px">Спасибо за покупку!</h1>
+</div>
+
+{% endblock %}

@@ -1,0 +1,7 @@
+.ProductImage{
+    border-radius: 10%;
+    border: 2px solid black; 
+
+    margin-left: 20px;
+    margin-top: 10px; 
+}
